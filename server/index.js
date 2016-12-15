@@ -20,6 +20,8 @@ app.set('port', (process.env.PORT || 5000));
 //enable pre-flight authoriuzation
 app.options('*', cors());
 
+
+
 /**
  * @brief returns a static welcome page.
  * @return a static page.
@@ -256,6 +258,77 @@ app.post('/addStudent', function(request, response)
 			response.writeHead(400, headers);
 			response.end(JSON.stringify());
 		}
+
+	}
+    else    
+	{
+		//unaceptable input
+		response.writeHead(406, headers);
+		response.end(JSON.stringify("1"));
+	}   
+
+});
+
+/**
+ * @brief funzione che controlla studenti con voto > o < soglia
+ * @return studenti con voto > o < soglia
+ */
+app.post('/searchByMark', function(request, response) 
+{	
+	var headers = {};
+	headers["Access-Control-Allow-Origin"] = "*";
+	headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
+	headers["Access-Control-Allow-Credentials"] = false;
+	headers["Access-Control-Max-Age"] = '86400'; // 24 hours
+	headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept";
+	headers["Content-Type"] = "application/json";
+
+	var soglia;
+	
+	//check body and parameters
+	if ( typeof request.body !== 'undefined' && request.body)
+	{
+		if ( 
+			 typeof request.body.mark !== 'undefined' && request.body.mark
+		   )
+            {
+			 soglia = request.body.mark;
+            }
+		else 
+			soglia = "not defined";
+	}
+	else
+	{
+		soglia = "body undefined";
+	}
+    
+    if (soglia!="not defined" && soglia!="body undefined")
+	{
+		//lista studenti
+		var listastudenti = studentManager.getList();
+        var min_mag = soglia[0]; // minore o maggior
+        var num_soglia = soglia[1]; //valore soglia
+        var studenti_rispettanti_soglia = [];
+        
+        if(min_mag == '<'){ //se sto cercando i minori della soglia
+            for(a in listastudenti){
+                if(listastudenti[a].mark < num_soglia)
+                    studenti_rispettanti_soglia.push(listastudenti[a]);
+            }
+        }
+        else{ //se sto cercando i maggiori della soglia
+            for(a in listastudenti){
+                if(listastudenti[a].mark > num_soglia)
+                    studenti_rispettanti_soglia.push(listastudenti[a]);
+            }
+        }
+        
+        console.log("Studenti "+min_mag+" della soglia "+num_soglia+":");
+        console.log(studenti_rispettanti_soglia);
+        
+        //rispondo con tutti gli studenti trovati
+        response.writeHead(200, headers);
+        response.end(JSON.stringify(studenti_rispettanti_soglia));
 
 	}
     else    

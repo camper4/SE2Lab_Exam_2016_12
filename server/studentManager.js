@@ -6,21 +6,21 @@ var studentList = [
 		SSN: "AB45", 
 		name: "Mattia",
 		address: "via Roma",
-		mark: "5"
+		mark: "4"
 	},
     {
 		ID: "2",
 		SSN: "A6T4",
 		name: "Fabio",
 		address: "via Sommarive",
-		mark: "6"
+		mark: "5"
 	},
 	{
 		ID: "3",
 		SSN: "9IK8",
 		name: "Paolo",
 		address: "via Trento",
-		mark: "7"
+		mark: "8"
 	},
 ];
 
